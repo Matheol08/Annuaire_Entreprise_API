@@ -7,16 +7,16 @@ namespace ModelsSalarie
     {
 
         
-       [Key][Required]
+       [Required][Key]
        public int ID { get; set; }
        public string Nom { get; set; }
        public string Prenom { get; set; }
-       public int Telephone_fixe { get; set; }
-       public int Telephone_portable { get; set; }
+       public string Telephone_fixe { get; set; }
+       public string Telephone_portable { get; set; }
        public string Email { get; set; }
         [ForeignKey("Service")]
-       public string IDservice { get; set; }
+       public int IDservice { get; set; }
         [ForeignKey("Site")]
-        public string IDsite { get; set; }
+        public int IDsite { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace API_rest.Contexts
         
         public DbSet<Salaries> Salaries { get; set; }
         public DbSet<Service_Employe> Service_Employe{ get; set; }
-        public DbSet<Site> Sites { get; set; }
+        public DbSet<Sites> Sites { get; set; }
     }
    
 }

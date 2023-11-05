@@ -21,16 +21,14 @@ namespace SiteContrôleur
         }
 
 
-        [HttpGet("/api/Sites")]
-        public async Task<ActionResult<IEnumerable<Site>>> GetSites()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Sites>>> GetSites()
         {
-            //var sites = await _Sitecontext.Sites.ToListAsync();
-            //return Ok(sites);
             return await _Sitecontext.Sites.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Site>> GetSitesById(int ID)
+        public async Task<ActionResult<Sites>> GetSitesById(int ID)
         {
               var site = await _Sitecontext.Sites.Where(c => c.ID.Equals(ID)).FirstOrDefaultAsync();
             if (site ==null) 
@@ -42,7 +40,7 @@ namespace SiteContrôleur
 
         [HttpPost]
 
-        public async Task<ActionResult<Site>> CreateSite(Site site)
+        public async Task<ActionResult<Sites>> CreateSite(Sites site)
         {
             _Sitecontext.Sites.Add(site);
             await _Sitecontext.SaveChangesAsync();
@@ -64,15 +62,26 @@ namespace SiteContrôleur
         }
 
 
-        [HttpPut]
-        //il faut que je mette à jour les sites cest pas le code en dessous mais celui-ci peut aider
+        [HttpPut("{id}")]
+        
+        public async Task<IActionResult> UpdateSite(int ID, Sites site)
+        {
 
-        //public async Task<ActionResult<Site>> CreateSite(Site site)
-        //{
-        //    _Sitecontext.Sites.Add(site);
-        //    await _Sitecontext.SaveChangesAsync();
-        //    return CreatedAtAction(nameof(GetSitesById), new { id = site.ID }, site);
-        //}
-        'POUSH LE DANS GIT COMME CA IL Y A DE LEVOLUTION DANS LE PROJET GIT COMME DEMAND2 DANS LE CAHIOER DES CHARGES.'
+            if (!ID.Equals(site.ID))
+            {
+                return BadRequest("ID's are different");   
+            }
+            var sitetoupdate = await _Sitecontext.Sites.FindAsync(ID);
+            if (sitetoupdate == null)
+            {
+                return NotFound($"Site with Id ={ID} not found");
+            }
+            sitetoupdate.Statut_Site = site.Statut_Site;
+            sitetoupdate.Ville = site.Ville;
+            await _Sitecontext.SaveChangesAsync();
+            return NoContent();
+        }
+        
+       
     }
 }

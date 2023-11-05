@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ModelsSite
 {
-    public class Site
+    public class Sites
     {
         [Required][Key]
         public int ID { get; set; }
