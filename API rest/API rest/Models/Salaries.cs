@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Models.Salarie
+    
+namespace ModelsSalarie
 {
-    public class Salarie
+    public class Salaries
     {
 
         
@@ -14,9 +14,9 @@ namespace Models.Salarie
        public int Telephone_fixe { get; set; }
        public int Telephone_portable { get; set; }
        public string Email { get; set; }
-        [ForeignKey("IDService")]
+        [ForeignKey("Service")]
        public string IDservice { get; set; }
-        [ForeignKey("IDSite")]
+        [ForeignKey("Site")]
         public string IDsite { get; set; }
     }
 }

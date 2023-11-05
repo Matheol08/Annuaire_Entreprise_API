@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Models.Service
+namespace ModelsService
 {
-    public class Service
+    public class Service_Employe
     {
         [Required][Key]
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string Nom_Service { get; set; }
     }
 }
