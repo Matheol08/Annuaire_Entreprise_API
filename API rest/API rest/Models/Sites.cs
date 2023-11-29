@@ -6,7 +6,7 @@ namespace ModelsSite
     public class Sites
     {
         [Required][Key]
-        public int ID { get; set; }
+        public int IDSite { get; set; }
         public string Ville { get; set; }
         public string Statut_Site { get; set; }
     }

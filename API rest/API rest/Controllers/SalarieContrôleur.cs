@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ModelsSalarie;
 using Microsoft.EntityFrameworkCore;
+using ModelsSite;
 
 namespace SalarieContrôleur
 {
@@ -20,13 +21,19 @@ namespace SalarieContrôleur
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Salaries>>> GetSalaries()
         {
-            return await _SalarieContext.Salaries.ToListAsync();
+            var salariesWithSites = await _SalarieContext.Salaries.Include(s => s.Sites).ToListAsync();
+
+            // Vous pouvez également mapper les données si vous le souhaitez
+            // var mappedData = salariesWithSites.Select(s => new YourViewModel { ... });
+
+            return Ok(salariesWithSites);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Salaries>> GetSalarieById(int ID)
         {
-            var salarie = await _SalarieContext.Salaries.Where(c => c.ID.Equals(ID)).FirstOrDefaultAsync();
+            var salarie = await _SalarieContext.Salaries.Where(c => c.IDSalaries.Equals(ID)).FirstOrDefaultAsync();
             if (salarie == null)
             {
                 return NotFound();
@@ -39,7 +46,7 @@ namespace SalarieContrôleur
         {
             _SalarieContext.Salaries.Add(salarie);
             await _SalarieContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSalarieById), new { id = salarie.ID }, salarie);
+            return CreatedAtAction(nameof(GetSalarieById), new { id = salarie.IDSalaries }, salarie);
         }
 
         [HttpDelete("{id}")]
@@ -58,7 +65,7 @@ namespace SalarieContrôleur
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSalarie(int ID, Salaries salarie)
         {
-            if (!ID.Equals(salarie.ID))
+            if (!ID.Equals(salarie.IDSalaries))
             {
                 return BadRequest("ID's are different");
             }
@@ -73,7 +80,7 @@ namespace SalarieContrôleur
             salarieToUpdate.Telephone_portable = salarie.Telephone_portable;
             salarieToUpdate.Email = salarie.Email;
             salarieToUpdate.IDservice = salarie.IDservice;
-            salarieToUpdate.IDsite = salarie.IDsite;
+            salarieToUpdate.IDSite = salarie.IDSite;
             await _SalarieContext.SaveChangesAsync();
             return NoContent();
         }

@@ -26,7 +26,7 @@ using ModelsService;
                 [HttpGet("{id}")]
                 public async Task<ActionResult<Service_Employe>> GetServiceEmployeById(int ID)
                 {
-                    var serviceEmploye = await _contextService_Employes.Service_Employe.Where(c => c.ID.Equals(ID)).FirstOrDefaultAsync();
+                    var serviceEmploye = await _contextService_Employes.Service_Employe.Where(c => c.IDService.Equals(ID)).FirstOrDefaultAsync();
                     if (serviceEmploye == null)
                     {
                         return NotFound();
@@ -39,7 +39,7 @@ using ModelsService;
                 {
                     _contextService_Employes.Service_Employe.Add(serviceEmploye);
                     await _contextService_Employes.SaveChangesAsync();
-                    return CreatedAtAction(nameof(GetServiceEmployeById), new { id = serviceEmploye.ID }, serviceEmploye);
+                    return CreatedAtAction(nameof(GetServiceEmployeById), new { id = serviceEmploye.IDService }, serviceEmploye);
                 }
 
                 [HttpDelete("{id}")]
@@ -58,7 +58,7 @@ using ModelsService;
                 [HttpPut("{id}")]
                 public async Task<IActionResult> UpdateServiceEmploye(int ID, Service_Employe serviceEmploye)
                 {
-                    if (!ID.Equals(serviceEmploye.ID))
+                    if (!ID.Equals(serviceEmploye.IDService))
                     {
                         return BadRequest("ID's are different");
                     }

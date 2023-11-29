@@ -30,7 +30,7 @@ namespace SiteContrôleur
         [HttpGet("{id}")]
         public async Task<ActionResult<Sites>> GetSitesById(int ID)
         {
-              var site = await _Sitecontext.Sites.Where(c => c.ID.Equals(ID)).FirstOrDefaultAsync();
+              var site = await _Sitecontext.Sites.Where(c => c.IDSite.Equals(ID)).FirstOrDefaultAsync();
             if (site ==null) 
             {
                 return NotFound();
@@ -44,7 +44,7 @@ namespace SiteContrôleur
         {
             _Sitecontext.Sites.Add(site);
             await _Sitecontext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSitesById), new { id = site.ID }, site);
+            return CreatedAtAction(nameof(GetSitesById), new { id = site.IDSite }, site);
         }
 
         [HttpDelete("{id}")]
@@ -67,7 +67,7 @@ namespace SiteContrôleur
         public async Task<IActionResult> UpdateSite(int ID, Sites site)
         {
 
-            if (!ID.Equals(site.ID))
+            if (!ID.Equals(site.IDSite))
             {
                 return BadRequest("ID's are different");   
             }
