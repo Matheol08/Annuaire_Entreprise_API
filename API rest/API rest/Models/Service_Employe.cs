@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ModelsSalarie;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelsService
 {
@@ -7,5 +8,8 @@ namespace ModelsService
         [Required][Key]
         public int IDService { get; set; }
         public string Nom_Service { get; set; }
+
+  
     }
+
 }

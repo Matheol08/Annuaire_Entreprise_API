@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ModelsSalarie;
 using Microsoft.EntityFrameworkCore;
-using ModelsSite;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Azure;
 
 namespace SalarieContrôleur
 {
@@ -19,16 +20,89 @@ namespace SalarieContrôleur
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalaries()
+            public async Task<ActionResult<IEnumerable<Salaries>>> GetSalaries()
         {
-            var salariesWithSites = await _SalarieContext.Salaries.Include(s => s.Sites).ToListAsync();
+            var salariesWithSitesAndService = await _SalarieContext.Salaries
+                .Include(s => s.Sites)
+                .Include(s => s.Service_Employe)
+                .ToListAsync();
 
-            // Vous pouvez également mapper les données si vous le souhaitez
-            // var mappedData = salariesWithSites.Select(s => new YourViewModel { ... });
-
-            return Ok(salariesWithSites);
+            return Ok(salariesWithSitesAndService);
         }
 
+
+        [HttpGet("rechercheByNameORFirstName")]
+        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalariesBySearchTerm(string searchTerm)
+        {
+            IQueryable<Salaries> query = _SalarieContext.Salaries;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(s => EF.Functions.Like(s.Nom, searchTerm + "%") || EF.Functions.Like(s.Prenom, searchTerm + "%"));
+            }
+
+            var result = await query.Include(s => s.Sites).Include(s => s.Service_Employe).ToListAsync();
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("rechercheSite")]
+        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalariesBySite(string ville)
+        {
+            IQueryable<Salaries> query = _SalarieContext.Salaries;
+
+            
+            if (!string.IsNullOrEmpty(ville))
+            {
+                query = query.Where(s => s.Sites.Ville == ville);
+            }
+
+            
+
+               var result = await query.Include(s => s.Sites).Include(s => s.Service_Employe).ToListAsync();
+
+            return Ok(result);
+        }
+        [HttpGet("rechercheSiteEtService")]
+        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalariesBySiteAndService(string ville, string nomService)
+        {
+            IQueryable<Salaries> query = _SalarieContext.Salaries;
+
+            if (!string.IsNullOrEmpty(ville))
+            {
+                query = query.Where(s => s.Sites.Ville == ville);
+            }
+
+            if (!string.IsNullOrEmpty(nomService))
+            {
+                query = query.Where(s => s.Service_Employe.Nom_Service == nomService);
+            }
+
+            var result = await query.Include(s => s.Sites).Include(s => s.Service_Employe).ToListAsync();
+
+            return Ok(result);
+        }
+
+
+
+        [HttpGet("rechercheService")]
+        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalariesByService(string Nom_Service)
+        {
+            IQueryable<Salaries> query = _SalarieContext.Salaries;
+
+
+            if (!string.IsNullOrEmpty(Nom_Service))
+            {
+                query = query.Where(s => s.Service_Employe.Nom_Service == Nom_Service);
+            }
+
+
+
+            var result = await query.Include(s => s.Sites).Include(s => s.Service_Employe).ToListAsync();
+
+            return Ok(result);
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Salaries>> GetSalarieById(int ID)
@@ -79,10 +153,13 @@ namespace SalarieContrôleur
             salarieToUpdate.Telephone_fixe = salarie.Telephone_fixe;
             salarieToUpdate.Telephone_portable = salarie.Telephone_portable;
             salarieToUpdate.Email = salarie.Email;
-            salarieToUpdate.IDservice = salarie.IDservice;
+            salarieToUpdate.IDService = salarie.IDService;
             salarieToUpdate.IDSite = salarie.IDSite;
             await _SalarieContext.SaveChangesAsync();
             return NoContent();
         }
+       
+            
+        
     }
 }

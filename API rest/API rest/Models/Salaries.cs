@@ -19,23 +19,16 @@ namespace ModelsSalarie
         public string Telephone_portable { get; set; }
         public string Email { get; set; }
 
+        [ForeignKey("Service_Employe")]
+        public int IDService { get; set; }
 
-
-
-        [ForeignKey("Service")]
-        public int IDservice { get; set; }
-
-
+        public virtual Service_Employe Service_Employe { get; set; }
         
-
         [ForeignKey("Sites")]
         public int IDSite { get; set; }
 
         public virtual Sites Sites { get; set; }
 
-        public string Ville
-        {
-            get { return Sites?.Ville; }
-        }
+     
     }
 }
