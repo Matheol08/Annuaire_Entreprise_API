@@ -116,12 +116,38 @@ namespace SalarieContrôleur
         }
 
         [HttpPost]
-        public async Task<ActionResult<Salaries>> CreateSalarie(Salaries salarie)
+        public async Task<ActionResult<Salaries>> CreateSalarie(Ajout_Salaries ajoutSalarie)
         {
-            _SalarieContext.Salaries.Add(salarie);
-            await _SalarieContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSalarieById), new { id = salarie.IDSalaries }, salarie);
+            try
+            {
+                // Convertissez Ajout_Salaries en Salaries
+                Salaries salarie = new Salaries
+                {
+                    Nom = ajoutSalarie.Nom,
+                    Prenom = ajoutSalarie.Prenom,
+                    Email = ajoutSalarie.Email,
+                    Telephone_portable = ajoutSalarie.Telephone_portable,
+                    Telephone_fixe = ajoutSalarie.Telephone_fixe,
+                    IDSite = ajoutSalarie.IDSite,
+                    IDService = ajoutSalarie.IDService
+                };
+
+                // Ajoutez le salarié à la base de données
+                _SalarieContext.Salaries.Add(salarie);
+                await _SalarieContext.SaveChangesAsync();
+
+                // Retournez le salarié créé avec les ID mis à jour
+                return CreatedAtAction(nameof(GetSalarieById), new { id = salarie.IDSalaries }, salarie);
+            }
+            catch (Exception ex)
+            {
+                // Ajoutez une journalisation pour déboguer les erreurs
+                Console.WriteLine($"Erreur lors de la création du salarié : {ex.Message}");
+                return StatusCode(500, $"Une erreur s'est produite lors de la création du salarié : {ex.Message}");
+            }
         }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSalarie(int ID)
